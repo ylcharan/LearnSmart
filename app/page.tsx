@@ -7,8 +7,17 @@ import {
 } from "@/lib/actions/companion.actions";
 import { getSubjectColor } from "@/lib/utils";
 
+type Companion = {
+  id: string;
+  name: string;
+  topic: string;
+  subject?: string;
+  duration: number | string;
+  bookmarked?: boolean;
+};
+
 const Page = async () => {
-  const companions = await getAllCompanions({ limit: 3 });
+  const companions: Companion[] = await getAllCompanions({ limit: 3 });
   const recentSessionsCompanions = await getRecentSessions(10);
 
   return (
@@ -17,11 +26,16 @@ const Page = async () => {
       <h1>Popular Voice-Agents</h1>
 
       <section className="home-section">
-        {companions.map((companion) => (
+        {companions?.map((companion: Companion) => (
           <CompanionCard
             key={companion.id}
-            {...companion}
-            color={getSubjectColor(companion.subject)}
+            id={companion.id}
+            name={companion.name}
+            topic={companion.topic}
+            subject={companion.subject}
+            duration={Number(companion.duration)}
+            bookmarked={Boolean(companion.bookmarked)}
+            color={getSubjectColor(companion.subject ?? "default")}
           />
         ))}
       </section>
